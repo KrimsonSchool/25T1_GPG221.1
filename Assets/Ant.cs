@@ -9,7 +9,7 @@ public class Ant : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        rb.AddRelativeTorque(0, Random.Range(-100, 100), 0);
+        rb.AddRelativeTorque(0, Random.Range(-500, 500), 0);
     }
 
     // Update is called once per frame
