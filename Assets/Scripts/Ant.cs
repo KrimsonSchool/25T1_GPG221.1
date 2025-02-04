@@ -9,11 +9,11 @@ public class Ant : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        rb.AddRelativeTorque(0, Random.Range(-500, 500), 0);
+        rb.AddRelativeTorque(0, Random.Range(-500, 500), 0);//gives start variance
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         
         bool hitSomething = Physics.Raycast(transform.position, transform.forward, out RaycastHit hit, distance);
@@ -21,7 +21,7 @@ public class Ant : MonoBehaviour
         
         if (hitSomething)
         {
-            rb.AddRelativeTorque(0, 100, 0);
+            rb.AddRelativeTorque(0, 1000, 0);
         }
 
     }

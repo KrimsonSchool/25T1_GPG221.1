@@ -14,7 +14,6 @@ public class MoveForward : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        rb.AddRelativeForce(transform.forward * speed);
-
+        rb.AddRelativeForce(0, 0, speed);
     }
 }
