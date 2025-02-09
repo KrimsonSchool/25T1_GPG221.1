@@ -4,6 +4,7 @@ public class MoveForward : MonoBehaviour
 {    public float speed;
     private Rigidbody rb;
 
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -17,3 +18,6 @@ public class MoveForward : MonoBehaviour
         rb.AddRelativeForce(0, 0, speed);
     }
 }
+
+
+
