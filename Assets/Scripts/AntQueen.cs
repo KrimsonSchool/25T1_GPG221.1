@@ -1,4 +1,6 @@
 using UnityEngine;
+using Unity;
+using UnityEditor;
 
 public class AntQueen : MonoBehaviour
 {
@@ -20,7 +22,7 @@ public class AntQueen : MonoBehaviour
         if (timer >= spawnTime)
         {
             timer = 0;
-            Instantiate(ant, transform.position, Quaternion.identity);
+            Instantiate(ant, transform.position, Quaternion.Euler(0, Random.Range(-360, 360), 0));
         }
     }
 }

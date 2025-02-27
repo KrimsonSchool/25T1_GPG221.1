@@ -5,24 +5,28 @@ public class Ant : MonoBehaviour
     public float distance;
 
     private Rigidbody rb;
-    
+
     public GameObject target;
 
     private float timer;
     public float decisionTime;
 
+    public bool showDebugRays;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        rb.AddRelativeTorque(0, Random.Range(-500, 500), 0);//gives start variance
+        rb.AddRelativeTorque(0, Random.Range(-500, 500), 0); //gives start variance
+
+        target = GameObject.Find("Food");
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
         //decide every xths of a second to rotate (weight towards food)
-        
+
         timer += Time.fixedDeltaTime;
         if (timer >= decisionTime)
         {
@@ -32,18 +36,16 @@ public class Ant : MonoBehaviour
                 Vector3 directionToTarget = target.transform.position - transform.position;
                 Vector3 crossProduct = Vector3.Cross(transform.forward, directionToTarget);
 
-                    if (crossProduct.y > 0)
-                    {
-                        //transform.Rotate(0, 30, 0);
-                        rb.AddRelativeTorque(0, 50, 0, ForceMode.Impulse);
-                    }
+                if (crossProduct.y > 0)
+                {
+                    //transform.Rotate(0, 30, 0);
+                    rb.AddRelativeTorque(0, 50, 0, ForceMode.Impulse);
+                }
                 else if (crossProduct.y < 0)
                 {
                     //transform.Rotate(0, -30, 0);
                     rb.AddRelativeTorque(0, -50, 0, ForceMode.Impulse);
-
                 }
-
             }
             else
             {
@@ -53,27 +55,40 @@ public class Ant : MonoBehaviour
 
             timer = 0;
         }
+
         //plus -45 and 45 degrees
-        bool hitSomething = Physics.Raycast(transform.position + transform.up, transform.forward, out RaycastHit hit, distance);
-        bool hitSomethingL = Physics.Raycast(transform.position + transform.up, (transform.forward + transform.right).normalized, out RaycastHit hitL, distance);
-        bool hitSomethingR = Physics.Raycast(transform.position + transform.up, (transform.forward + -transform.right).normalized, out RaycastHit hitR, distance);
-        
-        Debug.DrawRay(transform.position + transform.up, transform.forward * distance, Color.red);
-        Debug.DrawRay(transform.position + transform.up, (transform.forward + transform.right).normalized * distance, Color.red);
-        Debug.DrawRay(transform.position + transform.up, (transform.forward + -transform.right).normalized * distance, Color.red);
-        
+        bool hitSomething = Physics.Raycast(transform.position + transform.up, transform.forward, out RaycastHit hit,
+            distance);
+        bool hitSomethingL = Physics.Raycast(transform.position + transform.up,
+            (transform.forward + transform.right).normalized, out RaycastHit hitL, distance);
+        bool hitSomethingR = Physics.Raycast(transform.position + transform.up,
+            (transform.forward + -transform.right).normalized, out RaycastHit hitR, distance);
+
+        if (showDebugRays)
+        {
+            Debug.DrawRay(transform.position + transform.up, transform.forward * distance, Color.red);
+            Debug.DrawRay(transform.position + transform.up,
+                (transform.forward + transform.right).normalized * distance, Color.red);
+            Debug.DrawRay(transform.position + transform.up,
+                (transform.forward + -transform.right).normalized * distance, Color.red);
+        }
+
+
         if (hitSomething)
         {
-            print("Hit");
-                rb.AddRelativeTorque(0, 1000, 0);
+            //print("Hit");
+            rb.AddRelativeTorque(0, 1000, 0);
         }
+
         if (hitSomethingL)
         {
-            print("Hit L");
+            //print("Hit L");
             rb.AddRelativeTorque(0, -1000, 0);
         }
+
         if (hitSomethingR)
-        {            print("Hit R");
+        {
+            //print("Hit R");
             rb.AddRelativeTorque(0, 1000, 0);
         }
         else
@@ -84,6 +99,5 @@ public class Ant : MonoBehaviour
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 10 * Time.deltaTime);
         */
         }
-
     }
 }
