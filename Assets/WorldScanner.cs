@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class WorldScanner : MonoBehaviour
@@ -9,6 +10,7 @@ public class WorldScanner : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
     {
+        
         gridNodeReferences = new Node[size.x, size.y, size.z];
         Scan();
     }
@@ -22,10 +24,15 @@ public class WorldScanner : MonoBehaviour
                 for (int z = 0; z < size.z; z++)
                 {
                     gridNodeReferences[x,y, z] = new Node();
+                    
+                    gridNodeReferences[x,y,z].position = transform.position + new Vector3( x, y, z);
+                    
+                    //print("GRID POS: " + gridNodeReferences[x,y,z].position);
+                    
                     if (Physics.CheckBox(transform.position + new Vector3(x, y, z), new Vector3(0.5f, 0.5f, 0.5f), Quaternion.identity))
                     {
                         // Something is there
-                        gridNodeReferences[x,y, z].isBlocked = true;
+                        gridNodeReferences[x,y,z].isBlocked = true;
                     }
                     else
                     {
@@ -50,7 +57,12 @@ public class WorldScanner : MonoBehaviour
             {
                 for (int z = 0; z < size.z; z++)
                 {
-                    if (gridNodeReferences[x, y, z].isBlocked)
+                    if (FindFirstObjectByType<PathFind>().closed.Contains(gridNodeReferences[x, y, z]))
+                    {
+                        Gizmos.color = Color.yellow;
+                        Gizmos.DrawCube(transform.position + new Vector3(x, y, z), Vector3.one);
+                    }
+                    else if (gridNodeReferences[x, y, z].isBlocked)
                     {
                         Gizmos.color = Color.red;
                         Gizmos.DrawCube(transform.position + new Vector3(x, y, z), Vector3.one);
@@ -69,4 +81,5 @@ public class WorldScanner : MonoBehaviour
 public class Node
 {
     public bool isBlocked;
+    public Vector3 position;
 }
