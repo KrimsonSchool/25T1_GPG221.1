@@ -16,6 +16,11 @@ public class PathFind : MonoBehaviour
     public Node current;
     //start at 0,0,0
 
+    //movement stuff
+    public int index;
+
+    public Rigidbody rb;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -35,6 +40,34 @@ public class PathFind : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //face toward next node in closed list
+        print("dist: " + Vector3.Distance(closed[index].position, transform.position));
+        if (Vector3.Distance(closed[index].position, grid.target.transform.position) > 1)
+        {
+            if (Vector3.Distance(closed[index].position, transform.position) <= 1)
+            {
+                index++;
+            }
+        }
+
+        Vector3 toObject = closed[index].position - transform.position;
+        float dotProduct = Vector3.Dot(transform.right, toObject.normalized);
+
+        print("dot product " + dotProduct);
+        if (dotProduct > 0)
+        {
+            //right
+            rb.AddRelativeTorque(0, 5, 0, ForceMode.Impulse);
+        }
+        else if (dotProduct < 0)
+        {
+            //left
+            rb.AddRelativeTorque(0, -5, 0, ForceMode.Impulse);
+        }
+        else
+        {
+            //front or behind
+        }
     }
 
     public void Path()
@@ -42,70 +75,67 @@ public class PathFind : MonoBehaviour
         open.Add(current);
         while (open.Count > 0)
         {
-            // Pick the node with the lowest cost (A* approach)
-            
+            open.Sort((a, b) => a.dist.CompareTo(b.dist));
 
             current = open[0];
             open.RemoveAt(0);
             closed.Add(current);
 
-            // Goal reached
             print(current.position);
-            if (current.position == grid.gridNodeReferences[0,0,0].position) // Assuming 'target' is the goal node
+            if (current.position == new Vector3Int(Mathf.RoundToInt(grid.target.transform.position.x),
+                    Mathf.RoundToInt(grid.target.transform.position.y),
+                    Mathf.RoundToInt(grid.target.transform.position.z)))
             {
                 print("Path found");
                 break;
             }
 
-            // Get neighbors
-            List<Node> neighbors = GetNeighbors(current);
 
-            foreach (var neighbor in neighbors)
+            List<Node> neighbours = GetNeighbors(current);
+
+            foreach (Node neighbour in neighbours)
             {
-                if (!neighbor.isBlocked && !closed.Contains(neighbor))
+                if (!neighbour.isBlocked && !open.Contains(neighbour) && !closed.Contains(neighbour))
                 {
-                    if (!open.Contains(neighbor))
-                    {
-                        open.Add(neighbor);
-                    }
+                    neighbour.dist = Vector3.Distance(neighbour.position, grid.target.transform.position);
+                    open.Add(neighbour);
                 }
             }
         }
-        
     }
 
     private List<Node> GetNeighbors(Node node)
     {
-        List<Node> neighbors = new List<Node>();
+        List<Node> neighbours = new List<Node>();
 
-        // Get adjacent nodes
-        Vector3[] directions = new Vector3[] {
-            new Vector3(1, 0, 0), new Vector3(-1, 0, 0), 
-            new Vector3(0, 0, 1), new Vector3(0, 0, -1)
-        };
+        //check x, -x, z, -z is 
 
-        foreach (var direction in directions)
+        int posX = Mathf.RoundToInt(current.position.x);
+        int posZ = Mathf.RoundToInt(current.position.z);
+
+        for (int x = -1; x < 2; x++)
         {
-            Vector3 neighborPosition = node.position + direction;
-
-            // Ensure the neighborPosition is within bounds
-            int x = Mathf.RoundToInt(neighborPosition.x);
-            int y = Mathf.RoundToInt(neighborPosition.y);
-            int z = Mathf.RoundToInt(neighborPosition.z);
-
-            // Check if the neighbor is within the grid bounds (ensure gridNodeReferences is accessible)
-            if (x >= 0 && x < grid.gridNodeReferences.GetLength(0) &&
-                y >= 0 && y < grid.gridNodeReferences.GetLength(1) &&
-                z >= 0 && z < grid.gridNodeReferences.GetLength(2))
+            for (int z = -1; z < 2; z++)
             {
-                Node neighborNode = grid.gridNodeReferences[x, y, z];
-                if (neighborNode != null) // If the neighbor node is valid
+                if (posX + x > grid.size.x - 1 || posX + x < 0 || posZ + z > grid.size.z - 1 || posZ + z < 0)
                 {
-                    neighbors.Add(neighborNode);
+                    //uh oh
+                }
+                else
+                {
+                    if (!grid.gridNodeReferences[posX + x, 0, posZ + z].isBlocked)
+                    {
+                        neighbours.Add(grid.gridNodeReferences[posX + x, 0, posZ + z]);
+                    }
                 }
             }
         }
 
-        return neighbors;
+        return neighbours;
+    }
+
+    private void RunMyFunction()
+    {
+        Path();
     }
 }

@@ -7,10 +7,11 @@ public class WorldScanner : MonoBehaviour
 
     public Vector3Int size;
 
+    public GameObject target;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
     {
-        
         gridNodeReferences = new Node[size.x, size.y, size.z];
         Scan();
     }
@@ -23,24 +24,24 @@ public class WorldScanner : MonoBehaviour
             {
                 for (int z = 0; z < size.z; z++)
                 {
-                    gridNodeReferences[x,y, z] = new Node();
-                    
-                    gridNodeReferences[x,y,z].position = transform.position + new Vector3( x, y, z);
-                    
+                    gridNodeReferences[x, y, z] = new Node();
+
+                    gridNodeReferences[x, y, z].position = transform.position + new Vector3(x, y, z);
+
                     //print("GRID POS: " + gridNodeReferences[x,y,z].position);
-                    
-                    if (Physics.CheckBox(transform.position + new Vector3(x, y, z), new Vector3(0.5f, 0.5f, 0.5f), Quaternion.identity))
+
+                    if (Physics.CheckBox(transform.position + new Vector3(x, y, z), new Vector3(0.5f, 0.5f, 0.5f),
+                            Quaternion.identity))
                     {
                         // Something is there
-                        gridNodeReferences[x,y,z].isBlocked = true;
+                        gridNodeReferences[x, y, z].isBlocked = true;
                     }
                     else
                     {
-                        gridNodeReferences[x,y, z].isBlocked = false;
+                        gridNodeReferences[x, y, z].isBlocked = false;
                     }
                 }
             }
-            
         }
     }
 
@@ -82,4 +83,7 @@ public class Node
 {
     public bool isBlocked;
     public Vector3 position;
+
+    public float dist;
+
 }
