@@ -87,7 +87,9 @@ public class Node
 
     public float dist;
     public float startDist;
-    
+
     public float cost;
 
+
+    public Node child;
 }

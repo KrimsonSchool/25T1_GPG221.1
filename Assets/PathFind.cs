@@ -20,6 +20,8 @@ public class PathFind : MonoBehaviour
     public int index;
 
     public Rigidbody rb;
+    
+    List<Node> path;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -32,7 +34,7 @@ public class PathFind : MonoBehaviour
         current = grid.gridNodeReferences[10, 0, 10];
         open.Add(current);
 
-        print("POS: " + current.position);
+        //print("POS: " + current.position);
 
         Path();
     }
@@ -41,19 +43,24 @@ public class PathFind : MonoBehaviour
     void Update()
     {
         //face toward next node in closed list
-        print("dist: " + Vector3.Distance(closed[index].position, transform.position));
-        if (Vector3.Distance(closed[index].position, grid.target.transform.position) > 1)
+        //print("dist: " + Vector3.Distance(closed[index].position, transform.position));
+
+        //START FROM TARGET NODE, GO THROUGH CHILDREN
+        
+        //invert path
+        
+        if (Vector3.Distance(path[index].position, grid.target.transform.position) > 1)
         {
-            if (Vector3.Distance(closed[index].position, transform.position) <= 1)
+            if (Vector3.Distance(path[index].position, transform.position) <= 1)
             {
                 index++;
             }
         }
 
-        Vector3 toObject = closed[index].position - transform.position;
+        Vector3 toObject = path[index].position - transform.position;
         float dotProduct = Vector3.Dot(transform.right, toObject.normalized);
 
-        print("dot product " + dotProduct);
+        //print("dot product " + dotProduct);
         if (dotProduct > 0)
         {
             //right
@@ -82,7 +89,7 @@ public class PathFind : MonoBehaviour
             open.RemoveAt(0);
             closed.Add(current);
 
-            print(current.position);
+            //print(current.position);
             if (current.position == new Vector3Int(Mathf.RoundToInt(grid.target.transform.position.x),
                     Mathf.RoundToInt(grid.target.transform.position.y),
                     Mathf.RoundToInt(grid.target.transform.position.z)))
@@ -99,10 +106,12 @@ public class PathFind : MonoBehaviour
                 if (!neighbour.isBlocked && !open.Contains(neighbour) && !closed.Contains(neighbour))
                 {
                     neighbour.dist = Vector3.Distance(neighbour.position, grid.target.transform.position);
-                    neighbour.startDist = Vector3.Distance(neighbour.position, grid.start.transform.position);
+                    neighbour.startDist = current.startDist + Vector3.Distance(neighbour.position, current.position);
                     
-                    neighbour.cost = neighbour.dist+neighbour.startDist;
-                    
+                    neighbour.cost =  neighbour.startDist + neighbour.dist;
+
+                    neighbour.child = current;
+
                     open.Add(neighbour);
                 }
             }
