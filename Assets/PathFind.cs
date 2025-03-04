@@ -57,12 +57,12 @@ public class PathFind : MonoBehaviour
         if (dotProduct > 0)
         {
             //right
-            rb.AddRelativeTorque(0, 5, 0, ForceMode.Impulse);
+            rb.AddRelativeTorque(0, 1, 0, ForceMode.Impulse);
         }
         else if (dotProduct < 0)
         {
             //left
-            rb.AddRelativeTorque(0, -5, 0, ForceMode.Impulse);
+            rb.AddRelativeTorque(0, -1, 0, ForceMode.Impulse);
         }
         else
         {
@@ -75,7 +75,7 @@ public class PathFind : MonoBehaviour
         open.Add(current);
         while (open.Count > 0)
         {
-            open.Sort((a, b) => a.dist.CompareTo(b.dist));
+            open.Sort((a, b) => a.cost.CompareTo(b.cost));
 
             current = open[0];
             open.RemoveAt(0);
@@ -98,6 +98,10 @@ public class PathFind : MonoBehaviour
                 if (!neighbour.isBlocked && !open.Contains(neighbour) && !closed.Contains(neighbour))
                 {
                     neighbour.dist = Vector3.Distance(neighbour.position, grid.target.transform.position);
+                    neighbour.startDist = Vector3.Distance(neighbour.position, grid.start.transform.position);
+                    
+                    neighbour.cost = neighbour.dist+neighbour.startDist;
+                    
                     open.Add(neighbour);
                 }
             }

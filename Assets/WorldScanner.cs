@@ -8,6 +8,7 @@ public class WorldScanner : MonoBehaviour
     public Vector3Int size;
 
     public GameObject target;
+    public GameObject start;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
@@ -85,5 +86,8 @@ public class Node
     public Vector3 position;
 
     public float dist;
+    public float startDist;
+    
+    public float cost;
 
 }
