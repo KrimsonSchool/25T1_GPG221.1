@@ -75,7 +75,8 @@ public class PathFind : MonoBehaviour
         open.Add(current);
         while (open.Count > 0)
         {
-            open.Sort((a, b) => a.cost.CompareTo(b.cost));
+            //tried sort by cost, made it worse?
+            open.Sort((a, b) => a.dist.CompareTo(b.dist));
 
             current = open[0];
             open.RemoveAt(0);

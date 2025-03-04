@@ -547,6 +547,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   size: {x: 40, y: 1, z: 40}
   target: {fileID: 1806207375}
+  start: {fileID: 1315016543}
 --- !u!4 &818756743
 Transform:
   m_ObjectHideFlags: 0
