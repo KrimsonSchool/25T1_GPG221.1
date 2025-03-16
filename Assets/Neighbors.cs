@@ -10,8 +10,18 @@ public class Neighbors : MonoBehaviour
 
     public Rigidbody rb;
 
+    public GameObject collisionSphere;
+
+    private GameObject cS;
+
+    private DBugger debug;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    private void OnTriggerEnter(Collider other)
+    private void Start()
+    {
+        debug = FindFirstObjectByType<DBugger>();
+    }
+
+    /*private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.GetComponent<Neighbors>() != null)
         {
@@ -22,11 +32,32 @@ public class Neighbors : MonoBehaviour
     private void OnTriggerExit(Collider other)
     {
         neighboursList.Remove(other.transform);
-    }
+    }*/
 
     private void FixedUpdate()
     {
-        Physics.OverlapSphere(transform.position, 10.1f);
+        averagePos = rb.position;
+        neighboursList.Clear();
+        
+        Collider[] col = Physics.OverlapSphere(transform.position, 10.1f);
+        foreach (Collider coll in col)
+        {
+            if (coll.GetComponent<Neighbors>() != null)
+            {
+                neighboursList.Add(coll.transform);
+            }
+        }
+        
+
+        if (cS != null)
+        {
+            Destroy(cS);
+        }
+        if (debug.debugCollisions)
+        {
+            cS = Instantiate(collisionSphere, transform.position, Quaternion.identity);
+            cS.transform.localScale = new Vector3(10.1f * 2, 10.1f * 2, 10.1f * 2);
+        }
 
         if (neighboursList.Count > 0)
         {
@@ -35,13 +66,13 @@ public class Neighbors : MonoBehaviour
                 averagePos += n.position;
             }
 
-            print(averagePos);
-            averagePos /= neighboursList.Count;
+            //print(averagePos);
+            averagePos /= neighboursList.Count+1;
 
             Vector3 away = (transform.position - averagePos).normalized;
             Vector3 loacDir = transform.InverseTransformDirection(away);
 
-            rb.AddRelativeForce(loacDir * 1, ForceMode.Impulse);
+            rb.AddRelativeForce(loacDir * 10, ForceMode.Impulse);
         }
     }
 }

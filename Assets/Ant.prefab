@@ -2420,7 +2420,6 @@ GameObject:
   - component: {fileID: -669111752884902754}
   - component: {fileID: 5872784403161859216}
   - component: {fileID: 892321833324212301}
-  - component: {fileID: 5312045249644415300}
   m_Layer: 0
   m_Name: Ant
   m_TagString: Untagged
@@ -2459,6 +2458,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   index: 0
   rb: {fileID: 5872784403161859216}
+  aStar: 0
+  counterText: {fileID: 3862517991730383228, guid: c7d73b4719fa84a5ea638b8da14556bf, type: 3}
 --- !u!114 &2259762068492435615
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2487,6 +2488,7 @@ MonoBehaviour:
   neighboursList: []
   averagePos: {x: 0, y: 0, z: 0}
   rb: {fileID: 5872784403161859216}
+  collisionSphere: {fileID: 4050675220046943489, guid: be63c91e8f1fd4478b49e2641cbacec3, type: 3}
 --- !u!54 &5872784403161859216
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -2531,33 +2533,12 @@ CapsuleCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.5
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 0.99, z: 0}
---- !u!135 &5312045249644415300
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8272038067749330601}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Radius: 10
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &8382335461509304431
 GameObject:
   m_ObjectHideFlags: 0

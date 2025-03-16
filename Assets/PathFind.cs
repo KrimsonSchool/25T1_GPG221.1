@@ -3,6 +3,7 @@ using NUnit.Framework;
 using UnityEngine;
 using System.Collections.Generic;
 using System.Drawing;
+using TMPro;
 using Unity.VisualScripting;
 using Random = UnityEngine.Random;
 
@@ -23,9 +24,21 @@ public class PathFind : MonoBehaviour
     
     List<Node> path;
 
+    [HideInInspector] public bool aStar;
+
+
+    private Node targetNode;
+    private Node startNode;
+
+    public GameObject counterText;
+
+    private DBugger dBugger;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        aStar = true;
+        
         open = new List<Node>();
         closed = new List<Node>();
 
@@ -34,6 +47,8 @@ public class PathFind : MonoBehaviour
         current = grid.gridNodeReferences[10, 0, 10];
         open.Add(current);
 
+        dBugger = FindFirstObjectByType<DBugger>();
+
         //print("POS: " + current.position);
 
         Path();
@@ -41,44 +56,57 @@ public class PathFind : MonoBehaviour
 
     // Update is called once per frame
     void Update()
-    {
+    {//
+        aStar = dBugger.debugAStar;
         //face toward next node in closed list
         //print("dist: " + Vector3.Distance(closed[index].position, transform.position));
 
         //START FROM TARGET NODE, GO THROUGH CHILDREN
         
         //invert path
-        
-        if (Vector3.Distance(path[index].position, grid.target.transform.position) > 1)
+        if (aStar && path != null)
         {
-            if (Vector3.Distance(path[index].position, transform.position) <= 1)
+            //print(MakePathList().Count);
+
+
+            if (index < path.Count-1)
             {
-                index++;
+                if (Vector3.Distance(path[index].position, transform.position) <= 1)
+                {
+                    index++;
+                }
             }
-        }
+            else
+            {
+                print("At Target!");
+            }
+            
+            //print(path[index].position);
 
-        Vector3 toObject = path[index].position - transform.position;
-        float dotProduct = Vector3.Dot(transform.right, toObject.normalized);
+            Vector3 toObject = path[index].position - transform.position;
+            float dotProduct = Vector3.Dot(transform.right, toObject.normalized);
 
-        //print("dot product " + dotProduct);
-        if (dotProduct > 0)
-        {
-            //right
-            rb.AddRelativeTorque(0, 1, 0, ForceMode.Impulse);
-        }
-        else if (dotProduct < 0)
-        {
-            //left
-            rb.AddRelativeTorque(0, -1, 0, ForceMode.Impulse);
-        }
-        else
-        {
-            //front or behind
+            //print("dot product " + dotProduct);
+            if (dotProduct > 0)
+            {
+                //right
+                rb.AddRelativeTorque(0, 1, 0, ForceMode.Impulse);
+            }
+            else if (dotProduct < 0)
+            {
+                //left
+                rb.AddRelativeTorque(0, -1, 0, ForceMode.Impulse);
+            }
+            else
+            {
+                //front or behind
+            }
         }
     }
 
     public void Path()
     {
+        startNode = current;
         open.Add(current);
         while (open.Count > 0)
         {
@@ -94,7 +122,9 @@ public class PathFind : MonoBehaviour
                     Mathf.RoundToInt(grid.target.transform.position.y),
                     Mathf.RoundToInt(grid.target.transform.position.z)))
             {
-                print("Path found");
+                print("Path found " + path);
+                path = MakePathList();
+                path.Reverse();
                 break;
             }
 
@@ -108,9 +138,7 @@ public class PathFind : MonoBehaviour
                     neighbour.dist = Vector3.Distance(neighbour.position, grid.target.transform.position);
                     neighbour.startDist = current.startDist + Vector3.Distance(neighbour.position, current.position);
                     
-                    neighbour.cost =  neighbour.startDist + neighbour.dist;
-
-                    neighbour.child = current;
+                    neighbour.parent = current;
 
                     open.Add(neighbour);
                 }
@@ -151,5 +179,41 @@ public class PathFind : MonoBehaviour
     private void RunMyFunction()
     {
         Path();
+    }
+
+    public List<Node> MakePathList()
+    {
+        Node checkNode = new Node();
+        List<Node> pathe = new List<Node>();
+        //from target node -> start
+            
+        //find target node...
+        foreach (Node node in closed)
+        {
+            if (Vector3.Distance(node.position, grid.target.transform.position) > 1)
+            {
+                targetNode = node;
+                checkNode = targetNode;
+            }
+        }
+            
+        int counter = 0;
+        while(checkNode.parent != null)
+        {
+            pathe.Add(checkNode.parent);
+            checkNode = checkNode.parent;
+            
+            //GameObject ct = Instantiate(counterText, checkNode.position, Quaternion.identity);
+            //ct.GetComponentInChildren<TextMeshPro>().text = counter.ToString();
+            
+            
+            if (checkNode == startNode)
+            {
+                break;
+            }
+            counter++;
+        }
+        
+        return pathe;
     }
 }

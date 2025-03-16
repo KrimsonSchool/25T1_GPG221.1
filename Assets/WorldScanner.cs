@@ -9,10 +9,14 @@ public class WorldScanner : MonoBehaviour
 
     public GameObject target;
     public GameObject start;
+    
+    [HideInInspector]
+    public bool showGrid=true;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
     {
+        showGrid = true;
         gridNodeReferences = new Node[size.x, size.y, size.z];
         Scan();
     }
@@ -53,26 +57,29 @@ public class WorldScanner : MonoBehaviour
             return;
         }
 
-        for (int x = 0; x < size.x; x++)
+        if (showGrid)
         {
-            for (int y = 0; y < size.y; y++)
+            for (int x = 0; x < size.x; x++)
             {
-                for (int z = 0; z < size.z; z++)
+                for (int y = 0; y < size.y; y++)
                 {
-                    if (FindFirstObjectByType<PathFind>().closed.Contains(gridNodeReferences[x, y, z]))
+                    for (int z = 0; z < size.z; z++)
                     {
-                        Gizmos.color = Color.yellow;
-                        Gizmos.DrawCube(transform.position + new Vector3(x, y, z), Vector3.one);
-                    }
-                    else if (gridNodeReferences[x, y, z].isBlocked)
-                    {
-                        Gizmos.color = Color.red;
-                        Gizmos.DrawCube(transform.position + new Vector3(x, y, z), Vector3.one);
-                    }
-                    else
-                    {
-                        Gizmos.color = Color.green;
-                        Gizmos.DrawCube(transform.position + new Vector3(x, y, z), Vector3.one);
+                        if (FindFirstObjectByType<PathFind>().closed.Contains(gridNodeReferences[x, y, z]))
+                        {
+                            Gizmos.color = Color.yellow;
+                            Gizmos.DrawCube(transform.position + new Vector3(x, y, z), Vector3.one);
+                        }
+                        else if (gridNodeReferences[x, y, z].isBlocked)
+                        {
+                            Gizmos.color = Color.red;
+                            Gizmos.DrawCube(transform.position + new Vector3(x, y, z), Vector3.one);
+                        }
+                        else
+                        {
+                            Gizmos.color = Color.green;
+                            Gizmos.DrawCube(transform.position + new Vector3(x, y, z), Vector3.one);
+                        }
                     }
                 }
             }
@@ -88,8 +95,6 @@ public class Node
     public float dist;
     public float startDist;
 
-    public float cost;
 
-
-    public Node child;
+    public Node parent;
 }

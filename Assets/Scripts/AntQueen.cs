@@ -9,6 +9,9 @@ public class AntQueen : MonoBehaviour
     public GameObject ant;
 
     private float timer;
+    
+    [HideInInspector]
+    public bool canSpawn;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -18,11 +21,19 @@ public class AntQueen : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        timer+=Time.deltaTime;
-        if (timer >= spawnTime)
+        if (canSpawn)
         {
-            timer = 0;
-            Instantiate(ant, transform.position, Quaternion.Euler(0, Random.Range(-360, 360), 0));
+            timer += Time.deltaTime;
+            if (timer >= spawnTime)
+            {
+                timer = 0;
+                SpawnAnt();
+            }
         }
+    }
+
+    public void SpawnAnt()
+    {
+        Instantiate(ant, transform.position, Quaternion.Euler(0, Random.Range(-360, 360), 0));
     }
 }

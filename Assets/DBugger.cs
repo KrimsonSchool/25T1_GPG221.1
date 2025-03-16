@@ -4,46 +4,70 @@ using UnityEngine.UI;
 
 public class DBugger : MonoBehaviour
 {
-    public Button toggleGrid;
-    public Button toggleRays;
-    public Button toggleMove;
-    public Button toggleAStar;
+    public Toggle toggleCollisions;
+    public Toggle toggleMovement;
+    public Toggle toggleAStar;
+    public Toggle toggleAntQueen;
     public Button spawnAnt;
+    public Toggle toggleGrid;
 
     public static DBugger Instance;
 
+    public bool debugCollisions;
+    public bool debugMovements;
+    public bool debugAStar;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         Instance = this;
+        debugCollisions = false;
+        debugMovements = true;
+        debugAStar = true;
     }
 
     private void OnEnable()
     {
-        toggleGrid.onClick.AddListener(OnToggleGrid);
-        toggleRays.onClick.AddListener(OnToggleRays);
-        toggleMove.onClick.AddListener(OnToggleMove);
-        toggleAStar.onClick.AddListener(OnToggleAStar);
+        toggleCollisions.onValueChanged.AddListener(OnToggleCollisions);
+
+        //toggleMovement.onValueChanged.AddListener(OnToggleMovement);
+
+        toggleAStar.onValueChanged.AddListener(OnToggleAStar);
+        toggleAntQueen.onValueChanged.AddListener(OnToggleAntQueen);
+        
         spawnAnt.onClick.AddListener(OnSpawnAnt);
+        
+        toggleGrid.onValueChanged.AddListener(OnToggleGrid);
     }
 
-    private void OnToggleMove()
+    private void OnToggleAStar(bool state)
     {
-    }
-
-    private void OnToggleAStar()
-    {
+        debugAStar = state;
     }
 
     private void OnSpawnAnt()
     {
+        FindFirstObjectByType<AntQueen>().SpawnAnt();
     }
 
-    private void OnToggleRays()
+    private void OnToggleMovement(bool state)
     {
+        print("Change movement to " + state);
+        debugMovements = state;
+        print("Now dm = " + debugMovements);
     }
 
-    private void OnToggleGrid()
+    private void OnToggleCollisions(bool state)
     {
+        debugCollisions = state;
+    }
+
+    private void OnToggleAntQueen(bool state)
+    {
+        FindFirstObjectByType<AntQueen>().canSpawn =  state;
+    }
+
+    private void OnToggleGrid(bool state)
+    {
+        FindFirstObjectByType<WorldScanner>().showGrid = state;
     }
 }
