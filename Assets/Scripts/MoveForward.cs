@@ -1,10 +1,11 @@
 using UnityEngine;
 
 public class MoveForward : MonoBehaviour
-{    public float speed;
+{
+    public float speed;
     private Rigidbody rb;
 
-    DBugger  dB;
+    DBugger dB;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -16,13 +17,17 @@ public class MoveForward : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //print(dB.debugMovements);
-        if (dB.debugMovements)
+        if (dB != null)
+        {
+            //print(dB.debugMovements);
+            if (dB.debugMovements)
+            {
+                rb.AddRelativeForce(0, 0, speed);
+            }
+        }
+        else
         {
             rb.AddRelativeForce(0, 0, speed);
         }
     }
 }
-
-
-

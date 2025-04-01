@@ -57,7 +57,10 @@ public class PathFind : MonoBehaviour
     // Update is called once per frame
     void Update()
     {//
-        aStar = dBugger.debugAStar;
+        if (dBugger != null)
+        {
+            aStar = dBugger.debugAStar;
+        }
         //face toward next node in closed list
         //print("dist: " + Vector3.Distance(closed[index].position, transform.position));
 
