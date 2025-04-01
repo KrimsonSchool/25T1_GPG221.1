@@ -31,6 +31,8 @@ public class FindBoxState : AntAIState
         if (seeBox)
         {
             print("Saw box");
+            AntAICondition cond = new AntAICondition();
+            cond.Set("SeeBox", seeBox);
             Finish();
         }
 
@@ -45,17 +47,6 @@ public class FindBoxState : AntAIState
         if (!seeBox)
         {
             rb.AddTorque(0, Time.deltaTime, 0);
-            
-            Physics.Raycast(deliverer.transform.position, deliverer.transform.forward, out RaycastHit hit, Mathf.Infinity);
-            Debug.DrawRay(deliverer.transform.position, deliverer.transform.forward * 1000, Color.red);
-            if (hit.collider != null)
-            {
-                if (hit.collider.gameObject.name == "Box")
-                {
-                    seeBox = true;
-                    box = hit.collider.gameObject;
-                }
-            }
         }
     }
 }
