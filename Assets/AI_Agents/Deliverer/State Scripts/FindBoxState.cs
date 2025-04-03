@@ -14,10 +14,14 @@ public class FindBoxState : AntAIState
     private Rigidbody rb;
 
     public GameObject box;
+    
+    DelivererSensors sensors;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        sensors = FindFirstObjectByType<DelivererSensors>();
+        
         seeBox = false;
         globalSettings = FindFirstObjectByType<GlobalSettings>();
         
@@ -31,8 +35,9 @@ public class FindBoxState : AntAIState
         if (seeBox)
         {
             print("Saw box");
-            AntAICondition cond = new AntAICondition();
-            cond.Set("SeeBox", seeBox);
+            //AntAICondition cond = new AntAICondition();
+            //cond.Set("SeeBox", seeBox);
+            sensors.SeeBox = true;
             Finish();
         }
 
@@ -46,7 +51,19 @@ public class FindBoxState : AntAIState
 
         if (!seeBox)
         {
-            rb.AddTorque(0, Time.deltaTime, 0);
+            Physics.Raycast(transform.position, transform.forward, out RaycastHit hit, Mathf.Infinity);
+            Debug.DrawRay(transform.position, transform.forward * 1000, Color.red);
+            if (hit.collider != null)
+            {
+                if (hit.collider.gameObject.name == "Box")
+                {
+                    seeBox = true;
+                    
+                    sensors.Box = hit.collider.gameObject.transform.parent.gameObject;
+                }
+            }
+            
+            rb.AddRelativeTorque(0, Time.deltaTime, 0, ForceMode.Impulse);
         }
     }
 }
