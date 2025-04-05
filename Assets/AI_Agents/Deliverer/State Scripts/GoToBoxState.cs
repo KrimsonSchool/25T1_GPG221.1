@@ -12,8 +12,6 @@ public class GoToBoxState : AntAIState
     Vector3[] _points;
 
     private int index;
-
-    public GameObject debugSpheres;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -31,19 +29,13 @@ public class GoToBoxState : AntAIState
             print("Path found");
         }
         _points = _path.corners;
-
-        for (int i = 0; i < _points.Length; i++)
-        {
-            GameObject pp = Instantiate(debugSpheres, _points[i], Quaternion.identity);
-            pp.name = "s_"+i;
-        }
     }
 
     // Update is called once per frame
     void Update()
     {
         if (index < _points.Length)
-        {           _sensors.gameObject.transform.position = Vector3.MoveTowards(_sensors.transform.position, _points[index], Time.deltaTime);
+        {           _sensors.gameObject.transform.position = Vector3.MoveTowards(_sensors.transform.position, _points[index], Time.deltaTime * 5);
 
             //print("Dist: " + Vector3.Distance(_sensors.transform.position, _points[index]));
             if (Vector3.Distance(_sensors.transform.position, _points[index]) < 1.5f)

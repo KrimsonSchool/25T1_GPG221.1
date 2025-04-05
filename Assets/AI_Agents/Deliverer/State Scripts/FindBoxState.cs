@@ -34,7 +34,8 @@ public class FindBoxState : AntAIState
     {
         if (seeBox)
         {
-            print("Saw box");
+            //print("Saw box");
+            
             //AntAICondition cond = new AntAICondition();
             //cond.Set("SeeBox", seeBox);
             sensors.SeeBox = true;

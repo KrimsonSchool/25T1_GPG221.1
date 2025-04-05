@@ -8,8 +8,8 @@ public class DropOffBoxState : AntAIState
     void Start()
     {
         _sensors = FindFirstObjectByType<DelivererSensors>();
-        Destroy(_sensors.Box.transform.GetChild(0).gameObject);
-        Destroy(_sensors.Box);
+        _sensors.Box.transform.parent = null;
+        
         _sensors.Box = null;
         _sensors.HasBox = false;
         Finish();

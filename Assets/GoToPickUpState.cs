@@ -2,25 +2,24 @@ using Anthill.AI;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class GoToTruckState : AntAIState
+public class GoToPickUpState : AntAIState
 {
-    private DelivererSensors _sensors;
-    private GameObject _truck;
-    private Rigidbody _rb;
+    private int index;
 
     private NavMeshPath _path;
-    Vector3[] _points;
+    TruckDriverSensors _sensors;
+    private Vector3[] _points;
 
-    private int index;
+    private GameObject pickUp;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        _rb = GetComponentInParent<Rigidbody>();
-        _sensors = FindFirstObjectByType<DelivererSensors>();
-        _truck = _sensors.Truck;
+        pickUp = GameObject.Find("PickUp");
+        _sensors = GetComponentInParent<TruckDriverSensors>();
+        
         _path = new NavMeshPath();
 
-        if (!NavMesh.CalculatePath(_sensors.transform.position, _truck.transform.position, NavMesh.AllAreas, _path))
+        if (!NavMesh.CalculatePath(_sensors.transform.position, pickUp.transform.position, NavMesh.AllAreas, _path))
         {
             Debug.LogWarning("Path not found");
         }
@@ -28,7 +27,6 @@ public class GoToTruckState : AntAIState
         {
             print("Path found");
         }
-
         _points = _path.corners;
     }
 
@@ -36,23 +34,21 @@ public class GoToTruckState : AntAIState
     void Update()
     {
         if (index < _points.Length)
-        {
-            _sensors.gameObject.transform.position =
-                Vector3.MoveTowards(_sensors.transform.position, _points[index], Time.deltaTime * 5);
+        {           _sensors.gameObject.transform.position = Vector3.MoveTowards(_sensors.transform.position, _points[index], Time.deltaTime * 5);
 
             //print("Dist: " + Vector3.Distance(_sensors.transform.position, _points[index]));
             if (Vector3.Distance(_sensors.transform.position, _points[index]) < 1.5f)
             {
                 index++;
             }
-
-
+            
+            
         }
         else
         {
-            print("At Truck!");
+            print("At Box!");
+            _sensors.HaveDroppedOff = false;
             Finish();
         }
     }
 }
-

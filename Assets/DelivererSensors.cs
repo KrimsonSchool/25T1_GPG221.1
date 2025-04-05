@@ -44,10 +44,10 @@ public class DelivererSensors : MonoBehaviour, ISense
     {
         if (_box != null)
         {
-            print("Dist to box: " +AntMath.Distance(transform.position, _box.transform.position));
+            //print("Dist to box: " +AntMath.Distance(transform.position, _box.transform.position));
             if (AntMath.Distance(transform.position, _box.transform.position) < 1.6f)
             {
-                print("Near box!");
+                //print("Near box!");
                 return true;
             }
         }
@@ -59,10 +59,10 @@ public class DelivererSensors : MonoBehaviour, ISense
     {
         if (_truck != null)
         {
-            print("Dist to truck: " +AntMath.Distance(transform.position, _truck.transform.position));
+            //print("Dist to truck: " +AntMath.Distance(transform.position, _truck.transform.position));
             if (AntMath.Distance(transform.position, _truck.transform.position) < 1.6f)
             {
-                print("Near truck!");
+                //print("Near truck!");
                 return true;
             }
         }
